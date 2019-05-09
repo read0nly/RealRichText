@@ -98,7 +98,10 @@ class _MyAppState extends State<MyApp> {
   }
 }
 ```
-
+you can open or close the debugPrint, default is open .
+```
+RealRichText.enableDebugPeint(enable: false);
+```
 ## Note
 
 ImageSpan must set the width & height properties.
