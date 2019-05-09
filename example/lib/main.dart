@@ -12,6 +12,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    RealRichText.enableDebugPeint(enable: false);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(

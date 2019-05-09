@@ -42,6 +42,17 @@ import 'package:flutter/widgets.dart';
 class RealRichText extends Text {
   final List<TextSpan> textSpanList;
 
+  /// 2019年05月09日 jie 添加控制打印是否打印日志的flag 与方法
+  static bool _isPrintDebugLog = true;
+
+  static void enableDebugPeint({bool enable = true}) {
+    _isPrintDebugLog = enable;
+  }
+
+  static bool isEnableDebugPeint() {
+    return _isPrintDebugLog;
+  }
+
   RealRichText(
     this.textSpanList, {
     Key key,
@@ -88,10 +99,10 @@ class RealRichText extends Text {
 
     Widget result = _RichTextWrapper(
         textAlign: textAlign ?? defaultTextStyle.textAlign ?? TextAlign.start,
-        textDirection:
-            textDirection, // RichText uses Directionality.of to obtain a default if this is null.
-        locale:
-            locale, // RichText uses Localizations.localeOf to obtain a default if this is null
+        textDirection: textDirection,
+        // RichText uses Directionality.of to obtain a default if this is null.
+        locale: locale,
+        // RichText uses Localizations.localeOf to obtain a default if this is null
         softWrap: softWrap ?? defaultTextStyle.softWrap,
         overflow: overflow ?? defaultTextStyle.overflow,
         textScaleFactor:
@@ -120,6 +131,7 @@ class ImageSpan extends TextSpan {
   final EdgeInsets margin;
   final ImageProvider imageProvider;
   final ImageResolver imageResolver;
+
   ImageSpan(
     this.imageProvider, {
     this.imageWidth = 14.0,
@@ -285,15 +297,18 @@ class _RealRichRenderParagraph extends RenderParagraph {
   void performLayout() {
     super.performLayout();
 
-    debugPrint("size = $size");
+    if (RealRichText.isEnableDebugPeint()) {
+      debugPrint("size = $size");
+    }
   }
 
   /// this method draws inline-image over blank text space.
   void paintImageSpan(PaintingContext context, Offset offset) {
     final Canvas canvas = context.canvas;
     final Rect bounds = offset & size;
-
-    debugPrint("_RealRichRenderParagraph offset=$offset bounds=$bounds");
+    if (RealRichText.isEnableDebugPeint()) {
+      debugPrint("_RealRichRenderParagraph offset=$offset bounds=$bounds");
+    }
 
     canvas.save();
 
@@ -321,9 +336,10 @@ class _RealRichRenderParagraph extends RenderParagraph {
                 offsetForCaret.dx -
                 (textOffset == 0 ? 0 : textSpan.width / 2),
             offset.dy + offsetForCaret.dy);
-        debugPrint(
-            "_RealRichRenderParagraph ImageSpan, textOffset = $textOffset, offsetForCaret=$offsetForCaret, topLeftOffset=$topLeftOffset");
-
+        if (RealRichText.isEnableDebugPeint()) {
+          debugPrint(
+              "_RealRichRenderParagraph ImageSpan, textOffset = $textOffset, offsetForCaret=$offsetForCaret, topLeftOffset=$topLeftOffset");
+        }
         // if image is not ready: wait for async ImageInfo
         if (textSpan.imageResolver.image == null) {
           textSpan.imageResolver.resolve((imageInfo, synchronousCall) {
